@@ -1,0 +1,29 @@
+@import 'root';
+
+#map {
+    flex: 1;
+    height: 100%;
+    background-color: $color-light--1;
+
+    .leaflet-popup {
+        .leaflet-popup-content {
+            font-size: 1.5rem;
+        }
+
+        .leaflet-popup-tip {
+            background-color: $color-dark--1;
+        }
+    }
+
+    .running-popup {
+        .leaflet-popup-content-wrapper {
+            @include border($color-brand--2);
+        }
+    }
+
+    .cycling-popup {
+        .leaflet-popup-content-wrapper {
+            @include border($color-brand--2);
+        }
+    }
+}

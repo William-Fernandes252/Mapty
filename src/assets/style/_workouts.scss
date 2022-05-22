@@ -1,0 +1,61 @@
+@import 'root';
+
+.workouts {
+    list-style: none;
+    height: 77vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    &::-webkit-scrollbar {
+        width: 0;
+    }
+
+    .workout {
+        background-color: $color-dark--2;
+        border-radius: 5px;
+        padding: 1.5rem 2.25rem;
+        margin-bottom: 1.75rem;
+        cursor: pointer;
+
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 0.75rem 1.5rem;
+
+        &--running {
+            @include border($color-brand--2);
+        }
+
+        &--cycling {
+            @include border($color-brand--1);
+        }
+
+        &__title {
+            font-size: 1.7rem;
+            font-weight: 600;
+            grid-column: 1 / -1;
+        }
+
+        &__details {
+            display: flex;
+            align-items: baseline;
+        }
+
+        &__icon {
+            font-size: 1.8rem;
+            margin-right: 0.2rem;
+            height: 0.28rem;
+        }
+
+        &__value {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+
+        &__unit {
+            font-size: 1.1rem;
+            color: $color-light--1;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+    }
+}

@@ -1,0 +1,18 @@
+@import 'root';
+
+.sidebar {
+    flex-basis: 50rem;
+    background-color: $color-dark--1;
+    padding: 3rem 5rem 4rem 5rem;
+    display: flex;
+    flex-direction: column;
+
+    .logo {
+        height: 5.2rem;
+        align-self: center;
+        margin-bottom: 4rem;
+    }
+
+    @import 'form';
+    @import 'workouts';
+}
