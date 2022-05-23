@@ -19,6 +19,7 @@
     },
     "homepage": "https://github.com/William-Fernandes252/Mapty#readme",
     "devDependencies": {
+        "@types/geojson": "^7946.0.8",
         "@types/leaflet": "^1.7.10",
         "css-loader": "^6.7.1",
         "sass": "^1.52.1",
