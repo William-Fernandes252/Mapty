@@ -35,5 +35,6 @@ declare namespace Mapty {
         coords: coords;
         duration: number;
         distance: number;
+        id: string;
     }
 }
