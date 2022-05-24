@@ -10,6 +10,7 @@ declare namespace Mapty {
         #map: L.Map | undefined;
         #mapEvent: L.LeafletMouseEvent | undefined;
         #form: JQuery<HTMLElement>;
+        #workouts: Array<IWorkout>;
         #inputType: JQuery<HTMLElement>;
         #inputDistance: JQuery<HTMLElement>;
         #inputDuration: JQuery<HTMLElement>;
