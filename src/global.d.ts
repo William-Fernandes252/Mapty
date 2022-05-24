@@ -31,6 +31,7 @@ declare namespace Mapty {
     }
 
     export interface IWorkout {
+        type: string;
         coords: coords;
         duration: number;
         distance: number;
