@@ -41,6 +41,12 @@ abstract class Workout implements Mapty.IWorkout {
     get type(): string {
         return this._type;
     }
+    get id(): string {
+        return this._id;
+    }
+    get date(): Date {
+        return this._date;
+    }
 }
 
 export class Running extends Workout implements Mapty.IWorkout {
