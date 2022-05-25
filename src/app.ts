@@ -18,11 +18,11 @@ export default class App implements Mapty.IApp {
     #inputElevation: JQuery<HTMLElement> = $('#workout-elevation');
 
     constructor() {
+        // Get logged workouts from local storage
+        this._getLocalStorage();
+
         // Get user position
         this._getPosition();
-
-        // Get workouts from local storage
-        this._getLocalStorage();
 
         // Attach event handlers
         this.#form.on({
@@ -34,12 +34,6 @@ export default class App implements Mapty.IApp {
         this.#workoutsConteiner.on({
             click: this._movetoWorkoutPopup.bind(this),
         });
-        JSON.parse(localStorage.get('workouts')).forEach(
-            (workout: Mapty.IWorkout) => {
-                this._renderWorkout(workout);
-                this._renderWorkoutMarker(workout.coords, workout);
-            }
-        );
     }
 
     _getPosition() {
@@ -62,6 +56,7 @@ export default class App implements Mapty.IApp {
                 '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         }).addTo(this.#map);
 
+        // Render markers of stored workouts
         this.#workouts.forEach(workout =>
             this._renderWorkoutMarker(workout.coords, workout)
         );
@@ -98,10 +93,9 @@ export default class App implements Mapty.IApp {
 
         // Check that the map was loaded and a event was triggered
         if (!this.#mapEvent || !this.#map) {
-            alert(
+            return alert(
                 'An error occured in the map plugin. Please reload the page.'
             );
-            return;
         }
 
         // Get data from form
@@ -285,11 +279,33 @@ export default class App implements Mapty.IApp {
     }
 
     _getLocalStorage() {
-        const data = JSON.parse(localStorage.getItem('workouts') || '');
+        const workoutsJson = localStorage.getItem('workouts');
+        if (!workoutsJson) return;
 
-        if (!data) return;
+        const workoutsData = JSON.parse(workoutsJson);
 
-        this.#workouts = data;
+        workoutsData.forEach((workout: any) => {
+            if (workout._type === 'running' && workout._cadence) {
+                this.#workouts.push(
+                    new models.Running(
+                        workout._coords,
+                        workout._distance,
+                        workout._duration,
+                        workout._cadence
+                    )
+                );
+            } else if (workout._type === 'cycling' && workout._elevationGain) {
+                this.#workouts.push(
+                    new models.Running(
+                        workout._coords,
+                        workout._distance,
+                        workout._duration,
+                        workout._elevationGain
+                    )
+                );
+            }
+        });
+
         this.#workouts.forEach((workout: Mapty.IWorkout) => {
             this._renderWorkout(workout);
         });
