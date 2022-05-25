@@ -7,6 +7,7 @@ import $ from 'jquery';
 export default class App implements Mapty.IApp {
     #map: L.Map | undefined;
     #mapEvent: L.LeafletMouseEvent | undefined;
+    #mapZoomLevel: number = 13;
     #workouts: Array<Mapty.IWorkout> = [];
     #workoutsConteiner: JQuery<HTMLUListElement> = $('ul.workouts');
     #form: JQuery<HTMLElement> = $('.form');
@@ -23,6 +24,9 @@ export default class App implements Mapty.IApp {
         });
         this.#inputType.on({
             change: this._toggleElevationField.bind(this),
+        });
+        this.#workoutsConteiner.on({
+            click: this._movetoWorkoutPopup.bind(this),
         });
     }
 
@@ -240,6 +244,21 @@ export default class App implements Mapty.IApp {
         return `${this._getWorkoutIcon(workout)} ${this._getWorkoutDescription(
             workout
         )}`;
+    }
+
+    _movetoWorkoutPopup(e: JQuery.ClickEvent): void {
+        const workoutEl = e.target.closest('.workout');
+        if (!workoutEl) return;
+
+        const workout = this.#workouts.find(
+            workout => workout.id === workoutEl.data('id')
+        );
+        if (!workout) return;
+
+        this.#map?.setView(workout?.coords, this.#mapZoomLevel, {
+            animate: true,
+            duration: 1,
+        });
     }
 }
 
