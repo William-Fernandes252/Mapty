@@ -18,7 +18,13 @@ export default class App implements Mapty.IApp {
     #inputElevation: JQuery<HTMLElement> = $('#workout-elevation');
 
     constructor() {
+        // Get user position
         this._getPosition();
+
+        // Get workouts from local storage
+        this._getLocalStorage();
+
+        // Attach event handlers
         this.#form.on({
             submit: this._newWorkout.bind(this),
         });
@@ -28,6 +34,12 @@ export default class App implements Mapty.IApp {
         this.#workoutsConteiner.on({
             click: this._movetoWorkoutPopup.bind(this),
         });
+        JSON.parse(localStorage.get('workouts')).forEach(
+            (workout: Mapty.IWorkout) => {
+                this._renderWorkout(workout);
+                this._renderWorkoutMarker(workout.coords, workout);
+            }
+        );
     }
 
     _getPosition() {
@@ -49,6 +61,10 @@ export default class App implements Mapty.IApp {
             attribution:
                 '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         }).addTo(this.#map);
+
+        this.#workouts.forEach(workout =>
+            this._renderWorkoutMarker(workout.coords, workout)
+        );
 
         this.#map.on({
             click: this._showForm.bind(this),
@@ -138,6 +154,9 @@ export default class App implements Mapty.IApp {
 
         // Clean input fields and hide form
         this._clearForm();
+
+        // Set local storage to all workouts
+        this._setLocalStorage();
     }
 
     _renderWorkoutMarker(
@@ -258,6 +277,21 @@ export default class App implements Mapty.IApp {
         this.#map?.setView(workout?.coords, this.#mapZoomLevel, {
             animate: true,
             duration: 1,
+        });
+    }
+
+    _setLocalStorage() {
+        localStorage.setItem('workouts', JSON.stringify(this.#workouts));
+    }
+
+    _getLocalStorage() {
+        const data = JSON.parse(localStorage.getItem('workouts') || '');
+
+        if (!data) return;
+
+        this.#workouts = data;
+        this.#workouts.forEach((workout: Mapty.IWorkout) => {
+            this._renderWorkout(workout);
         });
     }
 }
