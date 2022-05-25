@@ -36,5 +36,6 @@ declare namespace Mapty {
         duration: number;
         distance: number;
         id: string;
+        date: Date;
     }
 }
