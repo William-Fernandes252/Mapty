@@ -89,7 +89,7 @@ export default class App implements Mapty.IApp {
         const { lat, lng } = this.#mapEvent.latlng;
         const distance = Number(this.#inputDistance.val());
         const duration = Number(this.#inputDuration.val());
-        let workout: Mapty.IWorkout | undefined = undefined;
+        let workout: Mapty.IWorkout | undefined;
 
         // Create workout
         if (type === 'running') {
@@ -129,6 +129,9 @@ export default class App implements Mapty.IApp {
         // Render workout on map as marker
         this._renderWorkoutMarker([lat, lng], workout);
 
+        // Render workout on list
+        this._renderWorkout(workout);
+
         // Clean input fields and hide form
         this._clearForm();
     }
@@ -150,13 +153,63 @@ export default class App implements Mapty.IApp {
                         className: `${workout.type}-popup`,
                     })
                 )
-                .setPopupContent('Workout')
+                .setPopupContent(this._getWorkoutPopupContent(workout))
                 .openPopup();
         }
     }
 
     _renderWorkout(workout: Mapty.IWorkout) {
-        const workoutListItem = this.#workoutsConteiner.append();
+        let html = `<li class="workout workout--${workout.type}" data-id="${
+            workout.id
+        }">
+            <h2 class="workout__title">${this._getWorkoutDescription(
+                workout
+            )}</h2>
+            <div class="workout__details">
+                <span class="workout__icon">${this._getWorkoutIcon(
+                    workout
+                )}</span>
+                <span class="workout__value">${workout.distance}</span>
+                <span class="workout__unit">km</span>
+            </div>
+            <div class="workout__details">
+                <span class="workout__icon">⏱</span>
+                <span class="workout__value">${workout.duration}</span>
+                <span class="workout__unit">min</span>
+            </div>
+            `;
+        if (workout.type === 'running') {
+            html += `
+                <div class="workout__details">
+                    <span class="workout__icon">⚡️</span>
+                    <span class="workout__value">${workout.cadence}</span>
+                    <span class="workout__unit">min/km</span>
+                </div>
+                <div class="workout__details">
+                    <span class="workout__icon">🦶🏻</span>
+                    <span class="workout__value">${workout.pace?.toFixed(
+                        1
+                    )}</span>
+                    <span class="workout__unit">spm</span>
+                </div>
+            </li>`;
+        } else if (workout.type === 'cycling') {
+            html += `
+                <div class="workout__details">
+                    <span class="workout__icon">⚡️</span>
+                    <span class="workout__value">${workout.speed?.toFixed(
+                        1
+                    )}</span>
+                    <span class="workout__unit">min/km</span>
+                </div>
+                <div class="workout__details">
+                    <span class="workout__icon">⛰</span>
+                    <span class="workout__value">${workout.elevationGain}</span>
+                    <span class="workout__unit">m</span>
+                </div>
+            </li>`;
+        }
+        this.#workoutsConteiner.append(html);
     }
 
     _clearForm() {
@@ -165,7 +218,28 @@ export default class App implements Mapty.IApp {
         this.#inputDuration.val('');
         this.#inputType.val('');
         this.#inputElevation.val('');
+        this.#form.css('display', 'none');
         this.#form.addClass('hidden');
+        setTimeout(() => this.#form.css('display', 'grid'), 1000);
+    }
+
+    _getWorkoutDescription(workout: Mapty.IWorkout): string {
+        return `${
+            workout.type[0].toUpperCase() + workout.type.slice(1)
+        } on ${Intl.DateTimeFormat(navigator.language, {
+            month: 'long',
+            day: 'numeric',
+        }).format(workout.date)}`;
+    }
+
+    _getWorkoutIcon(workout: Mapty.IWorkout): string {
+        return workout.type === 'running' ? '🏃🏻‍♂️' : '🚴🏻‍♀️';
+    }
+
+    _getWorkoutPopupContent(workout: Mapty.IWorkout): string {
+        return `${this._getWorkoutIcon(workout)} ${this._getWorkoutDescription(
+            workout
+        )}`;
     }
 }
 
