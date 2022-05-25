@@ -37,5 +37,9 @@ declare namespace Mapty {
         distance: number;
         id: string;
         date: Date;
+        cadence?: number;
+        speed?: number;
+        elevationGain?: number;
+        pace?: number;
     }
 }
