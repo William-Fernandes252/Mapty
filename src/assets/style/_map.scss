@@ -36,7 +36,7 @@
 
     .cycling-popup {
         .leaflet-popup-content-wrapper {
-            @include border($color-brand--2);
+            @include border($color-brand--1);
         }
     }
 }
